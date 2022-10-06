@@ -1,13 +1,13 @@
 import { compareAsc, toDate } from 'date-fns';
-import Project from './projects';
-import Task from './tasks';
+import Project from './Project';
+import Task from './Task';
 
 export default class TodoList {
   constructor() {
     this.projects = [];
     this.projects.push(new Project('Inbox'));
     this.projects.push(new Project('Today'));
-    this.projects.push(new Project('This Week'));
+    this.projects.push(new Project('This week'));
   }
 
   setProjects(projects) {
@@ -22,17 +22,19 @@ export default class TodoList {
     return this.projects.find((project) => project.getName() === projectName);
   }
 
-  constains(projectName) {
+  contains(projectName) {
     return this.projects.some((project) => project.getName() === projectName);
   }
 
   addProject(newProject) {
-    if (this.projects.find((project) => project.name === newProject.name)) return;
+    if (this.projects.find((project) => project.name === newProject.name)) { return; }
     this.projects.push(newProject);
   }
 
   deleteProject(projectName) {
-    const projectToDelete = this.projects.find((project) => project.getName() === projectName);
+    const projectToDelete = this.projects.find(
+      (project) => project.getName() === projectName,
+    );
     this.projects.splice(this.projects.indexOf(projectToDelete), 1);
   }
 
@@ -40,7 +42,7 @@ export default class TodoList {
     this.getProject('Today').tasks = [];
 
     this.projects.forEach((project) => {
-      if (project.getName() === 'Today' || project.getName() === 'This Week') { return; }
+      if (project.getName() === 'Today' || project.getName() === 'This week') { return; }
 
       const todayTasks = project.getTasksToday();
       todayTasks.forEach((task) => {
@@ -51,23 +53,25 @@ export default class TodoList {
   }
 
   updateWeekProject() {
-    this.getProject('This Week').tasks = [];
+    this.getProject('This week').tasks = [];
 
     this.projects.forEach((project) => {
-      if (project.getName() === 'Today' || project.getName() === 'This Week') { return; }
+      if (project.getName() === 'Today' || project.getName() === 'This week') { return; }
 
       const weekTasks = project.getTasksThisWeek();
       weekTasks.forEach((task) => {
         const taskName = `${task.getName()} (${project.getName()})`;
-        this.getProject('This Week').addTask(new Task(taskName, task.getDate()));
+        this.getProject('This week').addTask(new Task(taskName, task.getDate()));
       });
     });
 
-    this.getProject('This Week').setTasks(
-      this.getProject('This Week').getTasks().sort((taskA, taskB) => compareAsc(
-        toDate(new Date(taskA.getDataFormatted())),
-        toDate(new Date(taskB.getDataFormatted())),
-      )),
+    this.getProject('This week').setTasks(
+      this.getProject('This week')
+        .getTasks()
+        .sort((taskA, taskB) => compareAsc(
+          toDate(new Date(taskA.getDateFormatted())),
+          toDate(new Date(taskB.getDateFormatted())),
+        )),
     );
   }
 }

@@ -1,6 +1,6 @@
-import Project from './projects';
-import Task from './tasks';
-import TodoList from './todo';
+import Project from './Project';
+import Task from './Task';
+import TodoList from './TodoList';
 
 export default class Storage {
   static saveTodoList(data) {
@@ -14,12 +14,16 @@ export default class Storage {
     );
 
     todoList.setProjects(
-      todoList.getProjects().map((project) => Object.assign(new Project(), project)),
+      todoList
+        .getProjects()
+        .map((project) => Object.assign(new Project(), project)),
     );
 
-    todoList.getProjects().forEach((project) => project.setTasks(
-      project.getTasks().map((task) => Object.assign(new Task(), task)),
-    ));
+    todoList
+      .getProjects()
+      .forEach((project) => project.setTasks(
+        project.getTasks().map((task) => Object.assign(new Task(), task)),
+      ));
 
     return todoList;
   }
@@ -50,13 +54,13 @@ export default class Storage {
 
   static renameTask(projectName, taskName, newTaskName) {
     const todoList = Storage.getTodoList();
-    todoList.getProject(projectName).getTask(taskName).setname(newTaskName);
+    todoList.getProject(projectName).getTask(taskName).setName(newTaskName);
     Storage.saveTodoList(todoList);
   }
 
   static setTaskDate(projectName, taskName, newDueDate) {
     const todoList = Storage.getTodoList();
-    todoList.getItem(projectName).getTask(taskName).setDate(newDueDate);
+    todoList.getProject(projectName).getTask(taskName).setDate(newDueDate);
     Storage.saveTodoList(todoList);
   }
 
